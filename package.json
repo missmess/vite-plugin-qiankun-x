@@ -1,0 +1,45 @@
+{
+  "name": "vite-plugin-qiankun-x",
+  "version": "0.1.0",
+  "description": "A Vite plugin support qiankun app",
+  "main": "dist/index.js",
+  "module": "esm/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "rollup -c"
+  },
+  "author": "leon",
+  "license": "ISC",
+  "files": [
+    "dist",
+    "esm"
+  ],
+  "keywords": [
+    "vite",
+    "qiankun",
+    "plugin"
+  ],
+  "homepage": "https://github.com/missmess/vite-plugin-qiankun-x",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/missmess/vite-plugin-qiankun-x.git"
+  },
+  "publishConfig": {
+    "registry": "https://registry.npmjs.org/"
+  },
+  "dependencies": {
+    "cheerio": "^1.0.0"
+  },
+  "devDependencies": {
+    "@rollup/plugin-terser": "^0.4.4",
+    "@rollup/plugin-typescript": "^11.1.6",
+    "@typescript-eslint/eslint-plugin": "7.2.0",
+    "@typescript-eslint/parser": "7.2.0",
+    "eslint": "^8.57.0",
+    "rollup": "^4.21.1",
+    "rollup-plugin-dts": "^6.1.1",
+    "tslib": "^2.7.0",
+    "typescript": "^5.5.4",
+    "vite": "^5.3.1"
+  }
+}
