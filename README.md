@@ -1,22 +1,18 @@
 # vite-plugin-qiankun-x
 
-<!-- [![NPM version](https://img.shields.io/npm/v/vite-plugin-qiankun-x?color=a1b858&label=)](https://www.npmjs.com/package/vite-plugin-qiankun-x) -->
+<p align="center">
+  <a href="https://www.npmjs.com/package/vite-plugin-qiankun-x"><img src="https://img.shields.io/npm/v/vite-plugin-qiankun-x" alt="Version" /></a>
+  <a href="https://www.npmjs.com/package/vite-plugin-qiankun-x"><img src="https://img.shields.io/github/languages/top/missmess/vite-plugin-qiankun-x" alt="Languages" /></a>
+  <a href="https://www.npmjs.com/package/vite-plugin-qiankun-x"><img src="https://img.shields.io/npm/l/vite-plugin-qiankun-x" alt="License" /></a>
+  <a href="https://github.com/AttoJS/vite-plugin-qiankun-x/stargazers"><img src="https://img.shields.io/github/stars/missmess/vite-plugin-qiankun-x" alt="Star" /></a>
+  <a href="https://www.npmjs.com/package/vite-plugin-qiankun-x"><img src="https://img.shields.io/npm/dm/vite-plugin-qiankun-x" alt="Download" /></a>
+</p>
 
-  <a href="https://www.npmjs.com/package/vite-plugin-qiankun-x">
-    <img src="https://img.shields.io/npm/v/vite-plugin-qiankun-x" alt="Version" />
-  </a>
-  <a href="https://www.npmjs.com/package/vite-plugin-qiankun-x">
-    <img src="https://img.shields.io/github/languages/top/missmess/vite-plugin-qiankun-x" alt="Languages" />
-  </a>
-  <a href="https://www.npmjs.com/package/vite-plugin-qiankun-x">
-    <img src="https://img.shields.io/npm/l/vite-plugin-qiankun-x" alt="License" />
-  </a>
-  <a href="https://github.com/AttoJS/vite-plugin-qiankun-x/stargazers">
-    <img src="https://img.shields.io/github/stars/missmess/vite-plugin-qiankun-x" alt="Star" />
-  </a>
-  <a href="https://www.npmjs.com/package/vite-plugin-qiankun-x">
-    <img src="https://img.shields.io/npm/dm/vite-plugin-qiankun-x" alt="Download" />
-  </a>
+<p align="center">
+  <b>English</b> | <a href="https://github.com/missmess/vite-plugin-qiankun-x/blob/main/README.zh-CN.md">简体中文</a>
+</p>
+
+---
 
 A Vite plugin for [qiankun](https://qiankun.umijs.org/zh) micro-app. Support Vue and React.
 
