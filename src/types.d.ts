@@ -1,4 +1,4 @@
-export type Config = {
+export type Configuration = {
   /** 
    * Transform the url of script in index.html.
    */

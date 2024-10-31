@@ -22,6 +22,8 @@ A Vite plugin for [qiankun](https://qiankun.umijs.org/zh) micro-app. Support Vue
 
 - Keep ESM features of Vite.
 
+- Support React HMR (and other library using inline ESM).
+
 - No side effects, can run independently or within qiankun.
 
 - Can cooperate with [vite-plugin-dynamic-base](https://github.com/chenxch/vite-plugin-dynamic-base) for multi-environment deployment.
@@ -53,6 +55,15 @@ Of course, you must **export** lifecycle hooks in your entry script (Normally ma
 export function bootstrap() { /* ... */ }
 export function mount(props) { /* ... */ }
 export function bootstrap() { /* ... */ }
+```
+
+#### JS sandbox
+
+Dynamically importing ESM will cause the script to escape the js sandbox environment. If we cann't avoid **set/get** `window`, we need to use an exposed proxy `windowX`. 
+
+```javascript
+windowX.val = "Hello World"; // set
+windowX.__INJECTED_PUBLIC_PATH_BY_QIANKUN__ // get
 ```
 
 #### Multi Environment Deployment
@@ -94,13 +105,13 @@ Then assign `window.__dynamic_base__` before any code runs. For example, in `ind
 </html>
 ```
 
-#### JS sandbox
+#### Style Isolation
 
-Dynamically importing ESM will cause the script to escape the js sandbox environment. If we cann't avoid set/get `window` (although this is rare), we need to use an exposed proxy `windowX`. 
+If we use strict sandbox mode (it is default), the style isolation capability of qiankun will not take effect. Including `strictStyleIsolation` and `experimentalStyleIsolation`. 
 
-```javascript
-windowX.val = "Hello World";
-```
+If we use loose sandbox mode. There are also many bugs in these two isolation solutions. This is a logical flaw of qiankun. I have submitted two issues: [#3018](https://github.com/umijs/qiankun/issues/3018) and [#3019](https://github.com/umijs/qiankun/issues/3019). Once qiankun fixed up, both style isolation solutions will be available.
+
+So currently, we can only rely on micro-apps to handle style isolation on their own. You can use: `CSS in JS`, `Uniform CSS naming prefix`, `CSS modules`.
 
 ## Thanks
 

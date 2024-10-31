@@ -1,17 +1,14 @@
 import { PluginOption } from "vite";
 import { load } from "cheerio";
-import { Config } from "./types";
+import { Configuration } from "./types";
+import { convertInlineScript, convertUrlScript } from "./converter";
+import { scriptToDataUrl } from "./utils";
 
-/** Main script, prepend to <head> later. */
-function createInjectScript(appName: string): string {
-  return `
+/** Main script, prepend to <head>. */
+function createInjectScriptSnipet(appName: string): string {
+  const codeRunInSandbox = `
   /** --- This is a generated script by [vite-plugin-qiankun-x] --- */
-  // expose a new window object
-  window.windowX = (window.proxy || window)
-  // async import function
-  var asyncImport = (src) => {
-    return import((window.__INJECTED_PUBLIC_PATH_BY_QIANKUN__ || '') + '..' + src)
-  }
+  const proxy = window
   // real ESM module
   var realModule = null
   // save the unexecuted tasks
@@ -32,46 +29,48 @@ function createInjectScript(appName: string): string {
       }
     })
   }
-  // bind wrapped lifecycle hooks to window
-  window['${appName}'] = {
+  // bind wrapped lifecycle hooks to global
+  proxy['${appName}'] = {
     bootstrap: wrapLifecycle('bootstrap'),
     mount: wrapLifecycle('mount'),
     unmount: wrapLifecycle('unmount'),
-    update: wrapLifecycle('update')
-  }
-  // expose load function
-  window.__xLoadModule__ = (src) => {
-    asyncImport(src).then((mod) => {
-      console.log('module loaded', mod)
-      // only process main module
-      if (mod.mount && mod.unmount) {
-        realModule = mod
-        // execute all saved tasks
-        taskQueue.forEach((task) => task())
-        taskQueue.length = 0
-      }
-    })
-  }
+    update: wrapLifecycle('update'),
+    __xLoadModule__: (src) => {
+      return import(src).then((mod) => {
+        // console.log('module loaded', mod)
+        // only process main module
+        if (mod.mount && mod.unmount) {
+          realModule = mod
+          // execute all saved tasks
+          taskQueue.forEach((task) => task())
+          taskQueue.length = 0
+        }
+        return mod
+      })
+    }
+  }`;
+
+  const codeRunInRealWorld = `
+  console.log("设置windowX", window.proxy, window);
+  window.windowX = window.proxy || window
+  `;
+
+  return `${codeRunInSandbox}
+  // Inject windowX to real window
+  import("${scriptToDataUrl(codeRunInRealWorld)}")
   `;
 }
 
-function convertESMScript(moduleScriptSrcUrl: string): string {
-  return `window.__xLoadModule__('${moduleScriptSrcUrl}')`;
-}
-
+/** Plugin Entry */
 export default function pluginEntry(
   appName: string,
-  config: Config
+  configuration: Configuration = {}
 ): PluginOption {
-  function inlineToUrl(inlineScript: string): string {
-    return `data:application/javascript,${encodeURIComponent(inlineScript)}`;
-  }
-
-  const { urlTransform } = config;
+  const { urlTransform } = configuration;
 
   return [
     {
-      // this plugin keeps all export of entry script
+      // This plugin keeps all export of entry script
       name: "qiankun:keep-exports",
       // only build phase
       apply: "build",
@@ -89,13 +88,39 @@ export default function pluginEntry(
       },
     },
     {
-      // this plugin transforms index.html
+      // This plugin modify vite client script.
+      //
+      // Vite use `insertAdjacentElement` to insert <style> but qiankun
+      // doest hijack `insertAdjacentElement`. which will cause:
+      // 1. CSS rules won't be rewrite with special prefix.
+      // 2. <style> tag won't be re-inserted when app doing rebuild.
+      // see issue: https://github.com/umijs/qiankun/issues/3018
+      //
+      // qiankun doesn't fix this issue now, so we can only compromise 
+      // and modify the vite script.
+      name: "qiankun:fixup-vite",
+      // only serve phase
+      apply: "serve",
+      transform(code, id) {
+        // match vite client script
+        if (id.endsWith("client/client.mjs")) {
+          // replace `insertAdjacentElement` with `appendChild`
+          return code.replace(
+            'lastInsertedStyle.insertAdjacentElement("afterend", style);',
+            "document.head.appendChild(style);"
+          );
+        }
+        return null;
+      },
+    },
+    {
+      // This plugin transforms index.html
       name: "qiankun:transform-html",
       transformIndexHtml(html) {
         const $html = load(html);
         // prepend our main script
         $html("head").prepend(
-          `<script>${createInjectScript(appName)}</script>`
+          `<script>${createInjectScriptSnipet(appName)}</script>`
         );
 
         // pick all ESM scripts, and convert them
@@ -103,23 +128,30 @@ export default function pluginEntry(
           const $el = $html(el);
           let src = $el.attr("src");
 
+          // remove src and type attribute
+          $el.removeAttr("src");
+          $el.removeAttr("type");
+
           if (!src) {
             // inline script
             const inlineScriptContent = $el.html();
             // empty script, ignore
             if (!inlineScriptContent) return;
-            // convert to url
-            src = inlineToUrl(inlineScriptContent);
-          } else if (urlTransform) {
-            src = urlTransform(src);
+            // convert inline script
+            const convertedScript = convertInlineScript(
+              appName,
+              inlineScriptContent
+            );
+            const dataUrl = scriptToDataUrl(convertedScript);
+            $el.html(`import("${dataUrl}")`);
+            return;
           }
 
-          // remove src and type attribute
-          $el.removeAttr("src");
-          $el.removeAttr("type");
-
+          if (urlTransform) {
+            src = urlTransform(src);
+          }
           // set html with converted content
-          $el.html(convertESMScript(src));
+          $el.html(convertUrlScript(appName, src));
         });
 
         return $html.html();

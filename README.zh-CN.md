@@ -22,6 +22,8 @@
 
 - 保留Vite下全部ESM特性。
 
+- 支持React的热更新（其它使用到内联ESM的库均已支持）。
+
 - 无副作用。可独立运行也可在qiankun中运行。
 
 - 可以搭配[vite-plugin-dynamic-base](https://github.com/chenxch/vite-plugin-dynamic-base)实现多环境部署。
@@ -53,6 +55,15 @@ export default defineConfig({
 export function bootstrap() { /* ... */ }
 export function mount(props) { /* ... */ }
 export function bootstrap() { /* ... */ }
+```
+
+#### JS沙箱
+
+动态导入ESM会导致脚本脱离js沙箱环境。如果我们不可避免需要**set/get** `window`对象。我们需要使用暴露的代理对象`windowX`。
+
+```javascript
+windowX.val = "Hello World"; // set
+windowX.__INJECTED_PUBLIC_PATH_BY_QIANKUN__ // get
 ```
 
 #### 多环境部署
@@ -94,13 +105,13 @@ export default defineConfig({
 </html>
 ```
 
-#### JS沙箱
+#### 样式隔离
 
-动态导入ESM会导致脚本脱离js沙箱环境。如果我们不可避免需要set/get `window`对象（虽然很少见）。我们需要使用暴露的代理对象`windowX`。
+如果我们使用严格沙箱模式（它是默认的），那么qiankun提供的两种样式隔离方案将不会生效。包括`strictStyleIsolation`和`experimentalStyleIsolation`。
 
-```javascript
-windowX.val = "Hello World";
-```
+如果我们使用loose沙箱模式。这两种隔离方案也存在不少的bug。这是qiankun逻辑上的漏洞。我已经提交了两个issue：[#3018](https://github.com/umijs/qiankun/issues/3018)和[#3019](https://github.com/umijs/qiankun/issues/3019)。一旦qiankun修复，则可以使用这两种样式隔离方案。
+
+所以目前，只能依靠微应用自己去处理样式隔离。可以使用：`CSS in JS`、`统一命名前缀`、`CSS modules`。
 
 ## 致谢
 
