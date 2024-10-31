@@ -6,6 +6,20 @@
   "module": "esm/index.js",
   "types": "dist/index.d.ts",
   "scripts": {
+    "examples:install": "yarn build && run-p install:*",
+    "examples:dev": "run-p dev:*",
+    "examples:build": "run-p build:*",
+    "examples:preview": "run-p preview:* dev:main",
+    "install:main": "cd example/main-app && yarn",
+    "install:vue": "cd example/sub-vite-vue && yarn",
+    "install:react": "cd example/sub-vite-react && yarn",
+    "dev:main": "cd example/main-app && yarn start",
+    "dev:vue": "cd example/sub-vite-vue && yarn dev",
+    "dev:react": "cd example/sub-vite-react && yarn dev",
+    "build:vue": "cd example/sub-vite-vue && yarn build",
+    "build:react": "cd example/sub-vite-react && yarn build",
+    "preview:vue": "cd example/sub-vite-vue && yarn preview",
+    "preview:react": "cd example/sub-vite-react && yarn preview",
     "build": "rollup -c"
   },
   "author": "leon",
@@ -36,10 +50,14 @@
     "@typescript-eslint/eslint-plugin": "7.2.0",
     "@typescript-eslint/parser": "7.2.0",
     "eslint": "^8.57.0",
+    "npm-run-all": "^4.1.5",
     "rollup": "^4.21.1",
     "rollup-plugin-dts": "^6.1.1",
     "tslib": "^2.7.0",
     "typescript": "^5.5.4",
     "vite": "^5.3.1"
+  },
+  "peerDependencies": {
+    "vite": "^4 || ^5"
   }
 }
