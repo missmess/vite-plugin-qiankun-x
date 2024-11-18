@@ -1,6 +1,6 @@
 {
   "name": "vite-plugin-qiankun-x",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "description": "A Vite plugin support qiankun app",
   "main": "dist/index.js",
   "module": "esm/index.js",
@@ -42,7 +42,7 @@
     "registry": "https://registry.npmjs.org/"
   },
   "dependencies": {
-    "cheerio": "^1.0.0"
+    "cheerio": "1.0.0-rc.12"
   },
   "devDependencies": {
     "@rollup/plugin-terser": "^0.4.4",
