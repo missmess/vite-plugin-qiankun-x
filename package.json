@@ -1,6 +1,6 @@
 {
   "name": "vite-plugin-qiankun-x",
-  "version": "0.3.0",
+  "version": "0.3.1",
   "description": "A Vite plugin support qiankun app",
   "main": "dist/index.js",
   "module": "esm/index.js",

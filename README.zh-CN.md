@@ -66,6 +66,13 @@ windowX.val = "Hello World"; // set
 windowX.__INJECTED_PUBLIC_PATH_BY_QIANKUN__ // get
 ```
 
+当多个微应用同时运行在qiankun中时，`windowX`总是指向最后加载的微应用的window代理。此时我们需要使用`windowXs`来替代`windowX`。
+
+```javascript
+windowXs["your-micro-app-name"].val = "Hello World"; // set
+windowXs["your-micro-app-name"].__INJECTED_PUBLIC_PATH_BY_QIANKUN__ // get
+```
+
 #### 多环境部署
 
 Vite暂不支持像[__webpack_public_path__](https://webpack.js.org/guides/public-path/#on-the-fly)一样的运行时publicPath技术。我们可以使用[vite-plugin-dynamic-base](https://github.com/chenxch/vite-plugin-dynamic-base)代替。但是它会修改我们的脚本文件地址，所以我们需要使用`urlTransform`去修正。

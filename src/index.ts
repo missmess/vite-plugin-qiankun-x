@@ -51,8 +51,9 @@ function createInjectScriptSnipet(appName: string): string {
   }`;
 
   const codeRunInRealWorld = `
-  console.log("设置windowX", window.proxy, window);
   window.windowX = window.proxy || window
+  if (!window.windowXs) window.windowXs = {}
+  window.windowXs['${appName}'] = window.proxy || window
   `;
 
   return `${codeRunInSandbox}

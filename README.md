@@ -66,6 +66,13 @@ windowX.val = "Hello World"; // set
 windowX.__INJECTED_PUBLIC_PATH_BY_QIANKUN__ // get
 ```
 
+When multiple micro-apps are running in qiankun at the same time, `windowX` always points to the window proxy of the last loaded micro-app. At this time we need to use `windowXs` instead of `windowX`.
+
+```javascript
+windowXs["your-micro-app-name"].val = "Hello World"; // set
+windowXs["your-micro-app-name"].__INJECTED_PUBLIC_PATH_BY_QIANKUN__ // get
+```
+
 #### Multi Environment Deployment
 
 Vite doesn't support runtime publicPath like [__webpack_public_path__](https://webpack.js.org/guides/public-path/#on-the-fly). We can use [vite-plugin-dynamic-base](https://github.com/chenxch/vite-plugin-dynamic-base) instead. It will modify our script src, so we need to use `urlTransform` to correct it.

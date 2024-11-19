@@ -10,7 +10,7 @@ export default defineConfig({
   plugins: [
     react(),
     // @ts-ignore
-    qiankun("vite-vue"),
+    qiankun("vite-react"),
   ],
   base: "http://localhost:" + PORT,
   server: {
