@@ -1464,10 +1464,9 @@ uri-js@^4.2.2:
   dependencies:
     punycode "^2.1.0"
 
-"vite-plugin-qiankun-x@file:../..":
-  version "0.3.0"
-  dependencies:
-    cheerio "1.0.0-rc.12"
+"vite-plugin-qiankun-x@link:../..":
+  version "0.0.0"
+  uid ""
 
 vite@^5.4.9:
   version "5.4.10"
